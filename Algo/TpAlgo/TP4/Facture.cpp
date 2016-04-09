@@ -55,7 +55,7 @@ int RechercheArticle (int Num, int Qte, S_Article tabArticle[])
     int Res =1;
     int i =0;
 
-    if ((Num<0)||(Num>6)) {
+    if ((Num<0)||(Num>=6)) {
         Res=1;
     }
     else{
@@ -130,9 +130,9 @@ void Programme(int i, S_ArticleChoisi Save[], S_Article tabArticle[]){
     //Cas normal
     if (ResultatRecherche==0){
         Save[i].NumArticle = Code; // NumArticle
-        Save[i].NomArticle = tabArticle[i].NomArticle; //NomArticle
-        Save[i].PrixU = tabArticle[i].Prix; //PrixU
-        Save[i].PrixTotal = Quantite*tabArticle[i].Prix; //PrixTotal
+        Save[i].NomArticle = tabArticle[Code].NomArticle; //NomArticle
+        Save[i].PrixU = tabArticle[Code].Prix; //PrixU
+        Save[i].PrixTotal = Quantite*tabArticle[Code].Prix; //PrixTotal
         Save[i].QuantiteVoulue = Quantite; //QuantiteVoulue
         i++;
         cout << "Continuer ?(O/N)" << endl;
