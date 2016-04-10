@@ -4,12 +4,15 @@
 
 using namespace std;
 
+
 typedef struct Contact
 {
 	string Nom;
 	string Prenom;
 	string NumeroTel;
 }Contact;
+
+void Menu(Contact Individu[]);
 
 void CreationIndividu(Contact Individu[]){
 	Individu[0].Nom = "Thoraval";
@@ -65,6 +68,27 @@ void AfficherFichier(Contact Individu[]){
 		cout << "---------" << endl;
 		fclose (Annuaire);
 	}
+	Menu(Individu);
+}
+
+void Tri(Contact Individu[]) {
+	int min;
+	Contact aux;
+
+	for (int i = 0; i < 4; i++) {
+		min = i;
+		for (int j = i+1; j < 4; j++) {
+			if (Individu[j].Prenom < Individu[min].Prenom) {
+				min = j;
+			}
+		}
+		if (min != i) {
+			aux = Individu[min];
+			Individu[min] = Individu[i];
+			Individu[i] = aux;
+		}
+	}
+
 }
 
 void TriAbo(Contact Individu[])
@@ -79,24 +103,44 @@ void TriAbo(Contact Individu[])
 	{
 		while (!feof(Annuaire)||(i<4)) {
 			fread(&Individu[i], sizeof(Contact),1, Annuaire);
-				if (!feof(Annuaire)) {
-					for (int k = 0; k <4; k++) {
-						min = k;
-						for (int j = k+1; j < 3 ; j++) { //j< 4-1
-							if (strcmp(Individu[j].Prenom,Individu[min].Prenom) < 0) {
-								min = j;
-							}
-						}
-						if (min != k) {
-							Save = Individu[min];
-							Individu[min] = Individu[i];
-							Individu[k] = Save;
-						}
-					}
-				}
 			i++;
 		}
 		fclose (Annuaire);
+	}
+	Tri(Individu);
+	CreationFichier(Individu);
+	Menu(Individu);
+}
+
+void Menu(Contact Individu[]){
+	int Choix;
+
+	cout << "================ MENU ================" << endl;
+	cout << "1. Afficher" << endl;
+	cout << "2. Trier" << endl;
+	cout << "3. Rechercher (en developpement)" << endl;
+	cout << "4. Changer Numero (en developpement)" << endl;
+	cout << "5. Ajouter un abonné (en developpement)" << endl;
+	cout << "." << endl;
+	cout << "." << endl;
+	cout << "." << endl;
+	cout << "9. Quitter" << endl;
+	cout << "======================================" << endl << endl;
+	cout << "Choix: ";
+	cin >> Choix;
+	switch (Choix) {
+		case 1: AfficherFichier(Individu);
+			break;
+		case 2: TriAbo(Individu);
+			break;
+		case 3: Menu(Individu);
+			break;
+		case 4: Menu(Individu);
+			break;
+		case 5: Menu(Individu);
+			break;
+		case 9: ;
+			break;
 	}
 }
 
@@ -107,10 +151,6 @@ int main()
 	CreationIndividu(Individu);
 	cout << "Création du fichier Annuaire.txt" << endl<< endl;
 	CreationFichier(Individu);
-	AfficherFichier(Individu);
-	cout << "Tri des contacts" << endl<< endl;
-	TriAbo(Individu);
-	CreationFichier(Individu);
-	AfficherFichier(Individu);
+	Menu(Individu);
 	return 0;
 }
