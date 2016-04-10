@@ -112,13 +112,44 @@ void TriAbo(Contact Individu[])
 	Menu(Individu);
 }
 
+void Recherche(Contact Individu[]){
+	string Numero;
+	FILE *Annuaire;
+	int i=0;
+	cout << endl << endl;
+	do{
+		cout << "Numéro recherché: ";
+		cin >> Numero;
+	}while(Numero.size()!=10);
+	Annuaire = fopen ("Annuaire.txt","r");
+	if (Annuaire!=NULL)
+	{
+		cout << "---------" << endl;
+		while (!feof(Annuaire)&&(i<4)&&(Individu[i].NumeroTel!=Numero)) {
+			fread(&Individu[i], sizeof(Contact),1, Annuaire);
+			i++;
+		}
+		if (Individu[i].NumeroTel==Numero) {
+			cout << Individu[i].Nom << endl;
+			cout << Individu[i].Prenom << endl;
+			cout << Individu[i].NumeroTel << endl;
+		}
+		if (i>=4) {
+			cout << "Aucun contact avec ce numéro !" << endl;
+		}
+		cout << "---------" << endl;
+		fclose (Annuaire);
+	}
+	Menu(Individu);
+}
+
 void Menu(Contact Individu[]){
 	int Choix;
 
 	cout << "================ MENU ================" << endl;
 	cout << "1. Afficher" << endl;
 	cout << "2. Trier" << endl;
-	cout << "3. Rechercher (en developpement)" << endl;
+	cout << "3. Rechercher" << endl;
 	cout << "4. Changer Numero (en developpement)" << endl;
 	cout << "5. Ajouter un abonné (en developpement)" << endl;
 	cout << "." << endl;
@@ -133,7 +164,7 @@ void Menu(Contact Individu[]){
 			break;
 		case 2: TriAbo(Individu);
 			break;
-		case 3: Menu(Individu);
+		case 3: Recherche(Individu);
 			break;
 		case 4: Menu(Individu);
 			break;
