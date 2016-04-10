@@ -143,6 +143,37 @@ void Recherche(Contact Individu[]){
 	Menu(Individu);
 }
 
+void ModifNum(Contact Individu[]){
+	string Numero;
+	FILE *Annuaire;
+	int i=0;
+	cout << endl << endl;
+	do{
+		cout << "Ancien Numéro: ";
+		cin >> Numero;
+	}while(Numero.size()!=10);
+	Annuaire = fopen ("Annuaire.txt","r");
+	if (Annuaire!=NULL)
+	{
+		cout << "---------" << endl;
+		while (!feof(Annuaire)&&(i<4)&&(Individu[i].NumeroTel!=Numero)) {
+			fread(&Individu[i], sizeof(Contact),1, Annuaire);
+			i++;
+		}
+		if (Individu[i].NumeroTel==Numero) {
+			cout << "Entrez le nouveau numéro: ";
+			cin >> Individu[i].NumeroTel;
+		}
+		if (i>=4) {
+			cout << "Aucun contact avec ce numéro !" << endl;
+		}
+		cout << "---------" << endl;
+		fclose (Annuaire);
+	}
+	CreationFichier(Individu);
+	Menu(Individu);
+}
+
 void Menu(Contact Individu[]){
 	int Choix;
 
@@ -166,7 +197,7 @@ void Menu(Contact Individu[]){
 			break;
 		case 3: Recherche(Individu);
 			break;
-		case 4: Menu(Individu);
+		case 4: ModifNum(Individu);
 			break;
 		case 5: Menu(Individu);
 			break;
