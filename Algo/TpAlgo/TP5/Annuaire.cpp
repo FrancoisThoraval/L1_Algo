@@ -205,7 +205,7 @@ void Menu(Contact Individu[], int i){
 	cout << "2. Trier" << endl;
 	cout << "3. Rechercher" << endl;
 	cout << "4. Changer Numero" << endl;
-	cout << "5. Ajouter un abonné (en developpement)" << endl;
+	cout << "5. Ajouter un abonné" << endl;
 	cout << "." << endl;
 	cout << "." << endl;
 	cout << "." << endl;
