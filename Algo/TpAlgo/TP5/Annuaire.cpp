@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <malloc.h>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ typedef struct Contact
 	string NumeroTel;
 }Contact;
 
-void Menu(Contact Individu[]);
+void Menu(Contact Individu[], int i);
 
 void CreationIndividu(Contact Individu[]){
 	Individu[0].Nom = "Thoraval";
@@ -32,13 +33,13 @@ void CreationIndividu(Contact Individu[]){
 	Individu[3].NumeroTel = "0258963147";
 }
 
-void CreationFichier(Contact Individu[]){
+void CreationFichier(Contact Individu[],int NbrAbo){
 	FILE *Annuaire;
 
 	Annuaire = fopen ("Annuaire.txt","w");
 	if (Annuaire!=NULL)
 	{
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < NbrAbo; i++) {
 			fwrite(&Individu[i],sizeof(Contact),1,Annuaire);
 		}
 		fclose (Annuaire);
@@ -49,13 +50,13 @@ void CreationFichier(Contact Individu[]){
 	}
 }
 
-void AfficherFichier(Contact Individu[]){
+void AfficherFichier(Contact Individu[],int NbrAbo){
 	FILE *Annuaire;
 	int i=0;
 	Annuaire = fopen ("Annuaire.txt","r");
 	if (Annuaire!=NULL)
 	{
-		while (!feof(Annuaire)||(i<4)) {
+		while (!feof(Annuaire)||(i<NbrAbo)) {
 			fread(&Individu[i], sizeof(Contact),1, Annuaire);
 				if (!feof(Annuaire)) {
 					cout << "---------" << endl;
@@ -68,7 +69,7 @@ void AfficherFichier(Contact Individu[]){
 		cout << "---------" << endl;
 		fclose (Annuaire);
 	}
-	Menu(Individu);
+	Menu(Individu,NbrAbo);
 }
 
 void Tri(Contact Individu[]) {
@@ -91,7 +92,7 @@ void Tri(Contact Individu[]) {
 
 }
 
-void TriAbo(Contact Individu[])
+void TriAbo(Contact Individu[], int NbrAbo)
 {
 	Contact Save;
 	FILE *Annuaire;
@@ -108,11 +109,11 @@ void TriAbo(Contact Individu[])
 		fclose (Annuaire);
 	}
 	Tri(Individu);
-	CreationFichier(Individu);
-	Menu(Individu);
+	CreationFichier(Individu,NbrAbo);
+	Menu(Individu,NbrAbo);
 }
 
-void Recherche(Contact Individu[]){
+void Recherche(Contact Individu[], int NbrAbo){
 	string Numero;
 	FILE *Annuaire;
 	int i=0;
@@ -136,14 +137,15 @@ void Recherche(Contact Individu[]){
 		}
 		if (i>=4) {
 			cout << "Aucun contact avec ce numéro !" << endl;
+			Recherche(Individu,i);
 		}
 		cout << "---------" << endl;
 		fclose (Annuaire);
 	}
-	Menu(Individu);
+	Menu(Individu,NbrAbo);
 }
 
-void ModifNum(Contact Individu[]){
+void ModifNum(Contact Individu[], int NbrAbo){
 	string Numero;
 	FILE *Annuaire;
 	int i=0;
@@ -166,22 +168,43 @@ void ModifNum(Contact Individu[]){
 		}
 		if (i>=4) {
 			cout << "Aucun contact avec ce numéro !" << endl;
+			ModifNum(Individu,NbrAbo);
 		}
 		cout << "---------" << endl;
 		fclose (Annuaire);
 	}
-	CreationFichier(Individu);
-	Menu(Individu);
+	CreationFichier(Individu,NbrAbo);
+	Menu(Individu,NbrAbo);
 }
 
-void Menu(Contact Individu[]){
+void AjoutAbo(Contact Individu[], int &NbrAbo) {
+	Contact TestAjout[NbrAbo+1];
+	for (int i = 0; i < NbrAbo; i++) {
+		TestAjout[i].Nom=Individu[i].Nom;
+		TestAjout[i].Prenom=Individu[i].Prenom;
+		TestAjout[i].NumeroTel=Individu[i].NumeroTel;
+	}
+	cout << "Nom: ";
+	cin >> TestAjout[NbrAbo].Nom;
+	cout << "Prenom: ";
+	cin >> TestAjout[NbrAbo].Prenom;
+	do {
+		cout << "Numéro de téléphone: ";
+		cin >> TestAjout[NbrAbo].NumeroTel;
+	} while(TestAjout[NbrAbo].NumeroTel.size() != 10);
+	CreationFichier(TestAjout,NbrAbo+1);
+	Menu(TestAjout,NbrAbo+1);
+}
+
+
+void Menu(Contact Individu[], int i){
 	int Choix;
 
 	cout << "================ MENU ================" << endl;
 	cout << "1. Afficher" << endl;
 	cout << "2. Trier" << endl;
 	cout << "3. Rechercher" << endl;
-	cout << "4. Changer Numero (en developpement)" << endl;
+	cout << "4. Changer Numero" << endl;
 	cout << "5. Ajouter un abonné (en developpement)" << endl;
 	cout << "." << endl;
 	cout << "." << endl;
@@ -191,15 +214,15 @@ void Menu(Contact Individu[]){
 	cout << "Choix: ";
 	cin >> Choix;
 	switch (Choix) {
-		case 1: AfficherFichier(Individu);
+		case 1: AfficherFichier(Individu,i);
 			break;
-		case 2: TriAbo(Individu);
+		case 2: TriAbo(Individu,i);
 			break;
-		case 3: Recherche(Individu);
+		case 3: Recherche(Individu,i);
 			break;
-		case 4: ModifNum(Individu);
+		case 4: ModifNum(Individu,i);
 			break;
-		case 5: Menu(Individu);
+		case 5: AjoutAbo(Individu,i);
 			break;
 		case 9: ;
 			break;
@@ -208,11 +231,12 @@ void Menu(Contact Individu[]){
 
 int main()
 {
-	Contact Individu[4];
-	cout << "Création des Contacts" << endl<< endl;
+	int i=4; //Nombre de Contacts au départ
+	Contact Individu[i];
+	cout << "** Création des Contacts **" << endl;
 	CreationIndividu(Individu);
-	cout << "Création du fichier Annuaire.txt" << endl<< endl;
-	CreationFichier(Individu);
-	Menu(Individu);
+	cout << "** Création du fichier Annuaire.txt **" << endl<< endl;
+	CreationFichier(Individu, i);
+	Menu(Individu,i);
 	return 0;
 }
